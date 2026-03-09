@@ -5,169 +5,168 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Happy Birthday!</title>
     <style>
+        /* Base Reset */
+        * { box-sizing: border-box; }
+        
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             text-align: center;
             background: linear-gradient(135deg, #ff9a9e, #fad0c4);
             min-height: 100vh;
             margin: 0;
+            padding: 20px;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
             overflow-x: hidden;
         }
 
-        /* 1. Start Overlay (Fixes Audio Autoplay) */
+        /* 1. Start Overlay */
         #overlay {
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
             background: white;
-            z-index: 3000;
+            z-index: 5000;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
         }
 
-        /* 2. Main Container */
-        .container {
-            background: white;
-            padding: 40px 20px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            width: 85%;
+        /* 2. Content Layout */
+        .wrapper {
+            width: 100%;
             max-width: 500px;
-            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
             z-index: 10;
         }
 
-        h1 { color: #ff4b5c; font-size: 2.2em; }
-        p { font-size: 1.1em; line-height: 1.6; color: #444; }
+        .container {
+            background: white;
+            padding: 30px 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            width: 100%;
+        }
+
+        h1 { color: #ff4b5c; margin-top: 0; font-size: 1.8rem; }
+        p { line-height: 1.6; color: #555; font-size: 1.05rem; }
 
         button {
-            padding: 15px 25px;
-            margin: 10px;
+            padding: 14px 24px;
             border: none;
             border-radius: 12px;
             background: #ff4b5c;
             color: white;
-            font-size: 18px;
+            font-size: 1rem;
             font-weight: bold;
             cursor: pointer;
-            transition: transform 0.2s, background 0.2s;
+            transition: 0.2s;
+            margin: 5px;
         }
 
-        button:active { transform: scale(0.95); }
-
-        /* 3. Floating Images Logic */
+        /* 3. Photos - They appear above/below on mobile, side-by-side on PC */
         .side-photo {
-            position: fixed;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 280px;
+            width: 100%;
+            max-width: 320px;
             border-radius: 15px;
-            border: 8px solid white;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            border: 6px solid white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            display: none; /* Hidden until Note opens */
             opacity: 0;
-            transition: opacity 1s ease, transform 1s ease;
-            z-index: 5;
+            transition: opacity 1s;
         }
 
-        #photoLeft { left: 5%; transform: translateY(-50%) rotate(-5deg); }
-        #photoRight { right: 5%; transform: translateY(-50%) rotate(5deg); }
-
-        .side-photo.show { opacity: 1; }
-
-        /* 4. Mobile Responsive Fixes */
-        @media (max-width: 1100px) {
+        /* DESKTOP VIEW: Photos float to the sides */
+        @media (min-width: 1100px) {
             .side-photo {
-                position: relative;
-                top: 0; left: 0 !important; right: 0 !important;
-                transform: none !important;
-                width: 90%;
-                max-width: 300px;
-                margin: 15px auto;
-                display: none; /* Hide initially on mobile */
+                position: fixed;
+                top: 50%;
+                width: 280px;
+                display: block; /* Always exists on desktop */
+                transform: translateY(-50%);
             }
-            .side-photo.show { display: block; opacity: 1; }
-            .container { padding: 30px 15px; }
-            h1 { font-size: 1.8em; }
+            #photoLeft { left: 30px; transform: translateY(-50%) rotate(-3deg); }
+            #photoRight { right: 30px; transform: translateY(-50%) rotate(3deg); }
+            
+            .side-photo.show { opacity: 1; }
         }
 
-        /* 5. Falling Emojis */
+        /* MOBILE VIEW: Photos stack in order */
+        @media (max-width: 1099px) {
+            .side-photo.show { 
+                display: block; 
+                opacity: 1;
+                animation: fadeIn 1s;
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 4. Emoji Rain */
         .emoji {
             position: fixed;
             top: -50px;
-            font-size: 24px;
-            animation: fall linear forwards;
             z-index: 1;
+            pointer-events: none;
         }
-
         @keyframes fall {
-            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+            to { transform: translateY(110vh) rotate(360deg); }
         }
 
         #surpriseBtn {
             position: fixed;
-            top: 20px; right: 20px;
-            font-size: 35px;
-            background: none;
-            opacity: 0;
-            z-index: 1000;
-        }
-        #surpriseBtn.show { opacity: 1; }
-
-        #popup {
-            position: fixed;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-            z-index: 4000;
+            bottom: 20px;
+            right: 20px;
+            font-size: 30px;
+            background: #fff;
+            border-radius: 50%;
+            width: 60px; height: 60px;
             display: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
+        #surpriseBtn.show { display: flex; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
 
     <div id="overlay">
-        <h1>🎁 A surprise for you!</h1>
-        <button onclick="startEverything()">Click to Open 🎈</button>
+        <h1>🎁 A message for you</h1>
+        <button onclick="startEverything()">Tap to Open 🎈</button>
     </div>
 
-    <img id="photoLeft" src="photo1.jpg" alt="Memory 1" class="side-photo">
-    <img id="photoRight" src="photo2.jpg" alt="Memory 2" class="side-photo">
+    <div class="wrapper">
+        <img id="photoLeft" src="photo1.jpg" alt="Memory" class="side-photo">
 
-    <button id="surpriseBtn" onclick="showSurprise()">🎁</button>
+        <div class="container">
+            <div id="mainPage">
+                <h1>🎂 Happy Birthday!</h1>
+                <p>I made something special just for you. Click the button below!</p>
+                <button onclick="openNote()">Read my Note 💌</button>
+            </div>
 
-    <div class="container">
-        <div id="mainPage">
-            <h1>🎂 Happy Birthday!</h1>
-            <p>I made something special just for you.</p>
-            <button onclick="openNote()">Open Special Note 💌</button>
+            <div id="notePage" style="display:none;">
+                <h1>💌 Special Note</h1>
+                <p>
+                    You are one of the best friends I could ever ask for.<br><br>
+                    Thank you for all the memories and laughs. I hope this year brings you nothing but happiness and success!
+                </p>
+                <button onclick="goBack()">⬅ Back</button>
+            </div>
         </div>
 
-        <div id="notePage" style="display:none;">
-            <h1>💌 Special Note</h1>
-            <p>
-                You are one of the best friends I could ever ask for.<br>
-                Thank you for all the memories and laughs.<br>
-                I hope this year brings you happiness and success.
-            </p>
-            <button onclick="goBack()">⬅ Back</button>
-        </div>
+        <img id="photoRight" src="photo2.jpg" alt="Memory" class="side-photo">
     </div>
 
-    <div id="popup">
-        <h2 style="font-size: 2em;">🎉 Surprise!</h2>
-        <p>Have an amazing birthday filled with joy!</p>
-        <button onclick="closePopup()">Close</button>
-    </div>
+    <button id="surpriseBtn" onclick="alert('🎉 Stay Amazing! 🎉')">🎁</button>
 
     <audio id="birthdaySong" loop>
         <source src="song.mp3" type="audio/mpeg">
@@ -176,50 +175,37 @@
     <script>
         const song = document.getElementById("birthdaySong");
 
-        // 1. Starts Music & Hides Overlay
         function startEverything() {
             document.getElementById("overlay").style.display = "none";
-            song.play().catch(e => console.log("Audio play blocked", e));
+            song.play();
         }
 
-        // 2. Navigation
         function openNote() {
             document.getElementById("mainPage").style.display = "none";
             document.getElementById("notePage").style.display = "block";
-            document.getElementById("surpriseBtn").classList.add("show");
-            
-            // Show photos
             document.getElementById("photoLeft").classList.add("show");
             document.getElementById("photoRight").classList.add("show");
+            document.getElementById("surpriseBtn").classList.add("show");
         }
 
         function goBack() {
             document.getElementById("notePage").style.display = "none";
             document.getElementById("mainPage").style.display = "block";
-            document.getElementById("surpriseBtn").classList.remove("show");
             document.getElementById("photoLeft").classList.remove("show");
             document.getElementById("photoRight").classList.remove("show");
+            document.getElementById("surpriseBtn").classList.remove("show");
         }
 
-        // 3. Popups
-        function showSurprise() { document.getElementById("popup").style.display = "block"; }
-        function closePopup() { document.getElementById("popup").style.display = "none"; }
-
-        // 4. Emoji Rain
         function createEmoji() {
             const emoji = document.createElement("div");
-            emoji.classList.add("emoji");
-            const emojis = ["🎂", "🎉", "🎈", "🎁", "✨"];
-            emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-            
+            emoji.className = "emoji";
+            emoji.textContent = ["🎂", "🎉", "🎈", "🎁", "✨"][Math.floor(Math.random()*5)];
             emoji.style.left = Math.random() * 100 + "vw";
-            emoji.style.fontSize = (Math.random() * 20 + 20) + "px";
-            emoji.style.animationDuration = (Math.random() * 3 + 2) + "s";
-            
+            emoji.style.fontSize = Math.random() * 20 + 20 + "px";
+            emoji.style.animation = `fall ${Math.random()*3 + 2}s linear forwards`;
             document.body.appendChild(emoji);
             setTimeout(() => emoji.remove(), 5000);
         }
-
         setInterval(createEmoji, 400);
     </script>
 </body>
