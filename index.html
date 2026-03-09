@@ -23,7 +23,7 @@
             top: 0; left: 0;
             width: 100%; height: 100%;
             background: white;
-            z-index: 3000;
+            z-index: 5000;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -60,9 +60,9 @@
             box-shadow: 0 4px 10px rgba(255, 75, 92, 0.3);
         }
 
-        /* 3. The Photo Gallery Fix (Inside the Note) */
+        /* 3. The Photo Gallery Fix */
         .photo-gallery {
-            display: none; /* Hidden until Note opens */
+            display: none;
             margin-top: 20px;
             flex-direction: column;
             gap: 15px;
@@ -73,15 +73,10 @@
             border-radius: 12px;
             border: 5px solid #fff;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            box-sizing: border-box;
         }
 
-        /* 4. Desktop Adjustments (Floating on sides) */
+        /* Desktop Adjustments */
         @media (min-width: 1000px) {
-            .photo-gallery {
-                display: block !important; 
-                position: static;
-            }
             .side-photo {
                 position: fixed;
                 top: 50%;
@@ -89,13 +84,40 @@
                 transform: translateY(-50%);
                 opacity: 0;
                 transition: opacity 1s;
+                z-index: 5;
             }
             #photoLeft { left: 5%; }
             #photoRight { right: 5%; }
             .side-photo.show { opacity: 1; }
         }
 
-        /* 5. Animations & Surprises */
+        /* 4. The FIXED Surprise Button (Bottom Right) */
+        #surpriseBtn {
+            position: fixed;
+            bottom: 30px; 
+            right: 30px;
+            font-size: 35px;
+            background: white;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: none; /* Hidden until note opens */
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            animation: pulse 2s infinite;
+            border: none;
+            cursor: pointer;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 75, 92, 0.7); }
+            70% { transform: scale(1.1); box-shadow: 0 0 0 15px rgba(255, 75, 92, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 75, 92, 0); }
+        }
+
+        /* 5. Animations */
         .emoji {
             position: fixed;
             top: -50px;
@@ -108,19 +130,6 @@
             0% { transform: translateY(0) rotate(0deg); opacity: 1; }
             100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
         }
-
-        #surpriseBtn {
-            position: fixed;
-            top: 15px; right: 15px;
-            font-size: 30px;
-            background: white;
-            padding: 10px;
-            border-radius: 50%;
-            opacity: 0;
-            z-index: 1000;
-            transition: opacity 0.5s;
-        }
-        #surpriseBtn.show { opacity: 1; }
 
         #popup {
             position: fixed;
@@ -172,7 +181,7 @@
 
     <div id="popup">
         <h2>🎉 Surprise!</h2>
-        <p>Have an amazing day!</p>
+        <p>Have an amazing day filled with happiness!</p>
         <button onclick="closePopup()">Close</button>
     </div>
 
@@ -182,22 +191,22 @@
 
     <script>
         const song = document.getElementById("birthdaySong");
+        const surpriseBtn = document.getElementById("surpriseBtn");
 
         function startEverything() {
             document.getElementById("overlay").style.display = "none";
-            song.play();
+            song.play().catch(e => console.log("Audio play error", e));
         }
 
         function openNote() {
             document.getElementById("mainPage").style.display = "none";
             document.getElementById("notePage").style.display = "block";
-            document.getElementById("surpriseBtn").classList.add("show");
+            
+            // Show Surprise Button and set display to flex
+            surpriseBtn.style.display = "flex";
             
             // Handle Photos
-            const gallery = document.getElementById("gallery");
-            gallery.style.display = "flex";
-            
-            // For desktop view
+            document.getElementById("gallery").style.display = "flex";
             document.getElementById("photoLeft").classList.add("show");
             document.getElementById("photoRight").classList.add("show");
         }
@@ -205,7 +214,7 @@
         function goBack() {
             document.getElementById("notePage").style.display = "none";
             document.getElementById("mainPage").style.display = "block";
-            document.getElementById("surpriseBtn").classList.remove("show");
+            surpriseBtn.style.display = "none";
             document.getElementById("gallery").style.display = "none";
         }
 
