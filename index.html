@@ -40,7 +40,7 @@
             max-width: 450px;
             position: relative;
             z-index: 10;
-            margin: 80px 20px 20px 20px; /* Added top margin so it doesn't hit the top button */
+            margin: 80px 20px 20px 20px;
             box-sizing: border-box;
         }
 
@@ -90,24 +90,32 @@
             .side-photo.show { opacity: 1; }
         }
 
-        /* 4. THE FIXED SURPRISE BUTTON (TOP RIGHT) */
+        /* 4. THE FIXED SURPRISE BUTTON (UPDATED WITH LABEL STYLE) */
         #surpriseBtn {
             position: fixed;
             top: 20px; 
             right: 20px;
-            font-size: 30px;
-            background: rgba(255, 255, 255, 0.9); /* White with slight transparency */
-            width: 60px;
-            height: 60px;
+            background: rgba(255, 255, 255, 0.9);
+            width: 70px;
+            height: 70px;
             border-radius: 50%;
-            display: none; /* Hidden until note opens */
+            display: none; 
+            flex-direction: column; /* Stacks emoji and text */
             justify-content: center;
             align-items: center;
-            z-index: 5000; /* Extremely high to stay above everything */
+            z-index: 5000;
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
             border: 3px solid #ff4b5c;
             cursor: pointer;
             animation: pulse 2s infinite;
+            padding: 0;
+        }
+
+        .btn-text {
+            font-size: 10px;
+            color: #ff4b5c;
+            font-weight: bold;
+            margin-top: -2px;
         }
 
         @keyframes pulse {
@@ -152,7 +160,10 @@
         <button onclick="startEverything()">Click to Open 🎁</button>
     </div>
 
-    <button id="surpriseBtn" onclick="showSurprise()">🎁 Click Here</button>
+    <button id="surpriseBtn" onclick="showSurprise()">
+        <span>🎁</span>
+        <span class="btn-text">CLICK HERE</span>
+    </button>
 
     <div class="container">
         <div id="mainPage">
@@ -203,11 +214,7 @@
         function openNote() {
             document.getElementById("mainPage").style.display = "none";
             document.getElementById("notePage").style.display = "block";
-            
-            // Show Surprise Button
             surpriseBtn.style.display = "flex";
-            
-            // Handle Photos
             document.getElementById("gallery").style.display = "flex";
             document.getElementById("photoLeft").classList.add("show");
             document.getElementById("photoRight").classList.add("show");
@@ -238,5 +245,3 @@
     </script>
 </body>
 </html>
-
-
