@@ -90,24 +90,25 @@
             .side-photo.show { opacity: 1; }
         }
 
-        /* 4. THE FIXED SURPRISE BUTTON */
+        /* 4. THE FIXED SURPRISE BUTTON (Sparkle Icon ✨) */
         #surpriseBtn {
             position: fixed;
             top: 20px; 
             right: 20px;
             font-size: 30px;
-            background: rgba(255, 255, 255, 0.9);
-            width: 60px;
-            height: 60px;
+            background: rgba(255, 255, 255, 0.95); /* Brighter for mobile visibility */
+            width: 65px;
+            height: 65px;
             border-radius: 50%;
-            display: none; 
+            display: none; /* Controlled by JS */
             justify-content: center;
             align-items: center;
-            z-index: 5000;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            z-index: 10000; /* Increased to stay above EVERYTHING on mobile */
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
             border: 3px solid #ff4b5c;
             cursor: pointer;
             animation: pulse 2s infinite;
+            -webkit-tap-highlight-color: transparent; /* Clean touch for mobile */
         }
 
         @keyframes pulse {
@@ -137,10 +138,10 @@
             background: white;
             padding: 25px;
             border-radius: 20px;
-            width: 80%;
+            width: 85%; /* Slightly wider for mobile */
             max-width: 300px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-            z-index: 9000;
+            z-index: 10001;
             display: none;
         }
     </style>
@@ -152,7 +153,7 @@
         <button onclick="startEverything()">Click to Open 🎁</button>
     </div>
 
-    <button id="surpriseBtn" onclick="showSurprise()">🎁</button>
+    <button id="surpriseBtn" onclick="showSurprise()">✨</button>
 
     <div class="container">
         <div id="mainPage">
@@ -203,10 +204,16 @@
         function openNote() {
             document.getElementById("mainPage").style.display = "none";
             document.getElementById("notePage").style.display = "block";
+            
+            // Forces the sparkle button to show and stay on top
             surpriseBtn.style.display = "flex";
+            
             document.getElementById("gallery").style.display = "flex";
             document.getElementById("photoLeft").classList.add("show");
             document.getElementById("photoRight").classList.add("show");
+            
+            // Ensures page scrolls to top so they see the note starting
+            window.scrollTo(0, 0);
         }
 
         function goBack() {
@@ -216,13 +223,18 @@
             document.getElementById("gallery").style.display = "none";
         }
 
-        function showSurprise() { document.getElementById("popup").style.display = "block"; }
-        function closePopup() { document.getElementById("popup").style.display = "none"; }
+        function showSurprise() { 
+            document.getElementById("popup").style.display = "block"; 
+        }
+        
+        function closePopup() { 
+            document.getElementById("popup").style.display = "none"; 
+        }
 
         function createEmoji() {
             const emoji = document.createElement("div");
             emoji.classList.add("emoji");
-            const emojis = ["🎂", "🎉", "🎈", "🎁"];
+            const emojis = ["🎂", "🎉", "🎈", "✨"];
             emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
             emoji.style.left = Math.random() * 100 + "vw";
             emoji.style.fontSize = (Math.random() * 20 + 20) + "px";
